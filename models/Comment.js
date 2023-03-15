@@ -29,12 +29,16 @@ Comment.init(
   comment_text: {
     type: DataTypes.TEXT,
     allowNull: false,
+  },
+  date_created: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
   }
   },
   {
     sequelize,
-    timestamps: true,
-    createdAt: true,
+    timestamps: false,
     freezeTableName: true,
     underscored: true,
     modelName: 'comment',
