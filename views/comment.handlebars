@@ -1,15 +1,17 @@
-<div class="text-center">
+<div class="text-center card">
+  <div class="card-header">
   <h2>{{post_title}}</h2>
+  <p class="card-subtitle">Posted by {{user.username}} on {{format_date date_created}}</p>
+  </div>
   <p>{{post_text}}</p>
-  <p>Posted by {{user.username}} on {{format_date date_created}}</p>
 </div>
 
 {{#each comments as |comment| }}
-<div class="row mb-4 comment">
-  <div class="col-md-5">
+<div class="row mb-4 comment card">
+  <div class="col-md-12 card-header">
     <p>{{user.username}} : {{format_date comment.date_created}}</p>
   </div>
-  <div class="col-md-7">
+  <div class="col-md-12">
     <p>
       {{comment.comment_text}}
     </p>
@@ -18,7 +20,7 @@
 {{/each}}
 
 <div class="row mt-4">
-  <div class="col-md-6">
+  <div class="col-md-6 card">
     <h4>Add comment:</h4>
 
     <form class="form new-comment-form">

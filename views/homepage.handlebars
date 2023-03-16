@@ -1,13 +1,13 @@
 
 {{#each blogposts as |blogpost| }}
-<div class="row mb-4 blogpost">
-  <div class="col-md-5">
+<div class="row mb-4 blogpost card">
+  <div class="col-md-12 card-header">
     <h2>
       <a href="/blogpost/{{blogpost.id}}">{{post_title}}</a>
     </h2>
-    <p>Posted by {{blogpost.user.username}} on {{format_date blogpost.date_created}}</p>
+    <p class="card-subtitle" >Posted by {{blogpost.user.username}} on {{format_date blogpost.date_created}}</p>
   </div>
-  <div class="col-md-7">
+  <div class="col-md-12 card-body">
     <p>
       {{blogpost.post_text}}
     </p>

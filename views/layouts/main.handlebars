@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CMS blog</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="/css/jass.css">
   <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -21,9 +22,9 @@
       <nav>
         <!-- Conditionally render login or logout links -->
         {{#if logged_in}}
-        <button class="no-button" id="logout">logout</button>
+        <button class="btn btn-secondary" id="logout">logout</button>
         {{else}}
-        <a href="/login">login</a>
+        <a class="btn btn-secondary" href="/login">login</a>
         {{/if}}
       </nav>
     </header>
