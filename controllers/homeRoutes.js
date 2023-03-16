@@ -1,25 +1,24 @@
 const router = require('express').Router();
-const { Project, User } = require('../models');
+const { Blogpost, User, Comment } = require('../models');
 const withAuth = require('../utils/auth');
 
 router.get('/', async (req, res) => {
   try {
-    // Get all projects and JOIN with user data
-    const projectData = await Project.findAll({
+    const blogpostData = await Blogpost.findAll({
       include: [
         {
           model: User,
-          attributes: ['name'],
+          attributes: ['username'],
         },
       ],
     });
 
     // Serialize data so the template can read it
-    const projects = projectData.map((project) => project.get({ plain: true }));
+    const blogposts = blogpostData.map((blogpost) => blogpost.get({ plain: true }));
 
     // Pass serialized data and session flag into template
     res.render('homepage', { 
-      projects, 
+      blogposts, 
       logged_in: req.session.logged_in 
     });
   } catch (err) {
@@ -27,21 +26,46 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/project/:id', async (req, res) => {
+router.get('/blogpost/:id', async (req, res) => {
   try {
-    const projectData = await Project.findByPk(req.params.id, {
+    const blogpostData = await Blogpost.findByPk(req.params.id, {
       include: [
         {
           model: User,
-          attributes: ['name'],
-        },
+          attributes: ['username'],
+        },{
+          model: Comment,
+          attributes: ['comment_text', 'date_created'],
+          include: [
+            {
+              model: User,
+              attributes: ['username'],
+            }]
+        }
       ],
     });
 
-    const project = projectData.get({ plain: true });
+    const blogpost = blogpostData.get({ plain: true });
 
-    res.render('project', {
-      ...project,
+    res.render('blogpost', {
+      ...blogpost,
+      logged_in: req.session.logged_in
+    });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+router.get('/edit/:id', withAuth, async (req, res) => {
+  try {
+    const blogpostData = await Blogpost.findByPk(req.params.id, {
+
+    });
+
+    const blogpost = blogpostData.get({ plain: true });
+
+    res.render('postedit', {
+      ...blogpost,
       logged_in: req.session.logged_in
     });
   } catch (err) {
@@ -55,7 +79,7 @@ router.get('/profile', withAuth, async (req, res) => {
     // Find the logged in user based on the session ID
     const userData = await User.findByPk(req.session.user_id, {
       attributes: { exclude: ['password'] },
-      include: [{ model: Project }],
+      include: [{ model: Blogpost }],
     });
 
     const user = userData.get({ plain: true });
@@ -78,5 +102,51 @@ router.get('/login', (req, res) => {
 
   res.render('login');
 });
+router.get('/signup', (req, res) => {
+  // If the user is already logged in, redirect the request to another route
+  if (req.session.logged_in) {
+    res.redirect('/profile');
+    return;
+  }
 
+  res.render('signup');
+});
+router.get('/newpost', (req, res) => {
+  // If the user is already logged in, redirect the request to another route
+  if (req.session.logged_in) {
+    res.render('newpost');
+    return;
+  }
+
+  res.redirect('/login');
+});
+router.get('/comment/:id', async (req, res) => {
+  try {
+    const blogpostData = await Blogpost.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          attributes: ['username'],
+        },{
+          model: Comment,
+          attributes: ['comment_text', 'date_created'],
+          include: [
+            {
+              model: User,
+              attributes: ['username'],
+            }]
+        }
+      ],
+    });
+
+    const blogpost = blogpostData.get({ plain: true });
+
+    res.render('comment', {
+      ...blogpost,
+      logged_in: req.session.logged_in
+    });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 module.exports = router;
